@@ -1,0 +1,3 @@
+tax.myql => what should happen if we reuse "hasSoldHouse" as an integer? Obviously an error for the duplicate question with different types, but what about the condition? Should the error of condition not boolean be triggered or not?
+
+If an error of incompatible types is inside the parenthesis, the type checker can't find it 

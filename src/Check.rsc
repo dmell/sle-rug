@@ -4,6 +4,7 @@ import AST;
 import Resolve;
 import Message; // see standard library
 import Set; // for errors
+import IO; // for debugging
 
 data Type
   = tint()
@@ -31,19 +32,38 @@ TEnv collect(AForm f) {
 }
 
 set[Message] check(AForm f, TEnv tenv, UseDef useDef) 
-  = ( {} | it + check(q, tenv, useDef) | AQuestion q <- f.questions);
+  = ( {} | it + check(q, tenv, useDef) | /AQuestion q <- f.questions);
 
 // - produce an error if there are declared questions with the same name but different types.
 // - duplicate labels should trigger a warning 
 // - the declared type computed questions should match the type of the expression.
 set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) 
-  = { error("Reference to undefined question", q.src) | /AExpr e <- q, e has name && e.name notin tenv<1>}
-  + { error("Condition is not boolean", q.src) | q has condition && typeOf(q.condition, tenv, useDef) != tbool()}
+  /*= { error("Reference to undefined question", q.src) | /AExpr e <- q, e has name && e.name notin tenv<1>}
+  + { error("Condition is not boolean", q.src) | typeOf(q.condition, tenv, useDef) != tbool(), q has condition}
   + { error("Duplicate question with different type", q.src) | q has id  && size((tenv<1,3>)[q.id]) > 1}
   + { warning("Duplicate labels", q.src) | q has qtext && size((tenv<2,1>)[q.qtext]) > 1}
-  + { warning("Different labels for the same question", q.src) | q has id && size((tenv<1,2>)[q.id]) > 1};
-  //+ ( {} | it + check(exp, tenv, useDef) | /AExpr exp <- q.expr, q has expr)
-  //+ ( {} | it + check(exp, tenv, useDef) | /AExpr exp <- q.condition, q has condition);
+  + { warning("Different labels for the same question", q.src) | q has id && size((tenv<1,2>)[q.id]) > 1};*/
+  //+ ( {} | it + check(exp, tenv, useDef) | /AExpr exp <- q.expr, q has expr);
+{
+  msgs = {};
+  msgs += { error("Reference to undefined question", q.src) | /AExpr e <- q, e has name && e.name notin tenv<1>};
+  if (q has condition) {
+  	if (typeOf(q.condition, tenv, useDef) != tbool()) {
+  	  msgs += error("Condition is not boolean", q.src);
+  	}
+  }
+  msgs += { error("Duplicate question with different type", q.src) | q has id  && size((tenv<1,3>)[q.id]) > 1};
+  msgs += { warning("Duplicate labels", q.src) | q has qtext && size((tenv<2,1>)[q.qtext]) > 1};
+  if (q has expr) {
+    /*for (AExpr exp <- q.expr) {
+      msgs += check(exp, tenv, useDef);
+    }*/
+    print(q.expr);
+    print("\n\n");
+    msgs += check(q.expr, tenv, useDef);
+  }
+  return msgs;
+}
 
 
 // Check operand compatibility with operators.
@@ -99,6 +119,8 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
       return tint();
     case boolCons(int b, src = loc u):
       return tbool();
+    case exprCons(AExpr e, src = loc u):
+      return typeOf(e, tenv, useDef);
     case mul(AExpr l, AExpr r, src = loc u):
       return tint();
     case div(AExpr l, AExpr r, src = loc u):
@@ -127,7 +149,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
       return tbool();  
     // etc.
     }
-  	return tunknown(); 
+  	//return tunknown(); 
 }
 
 /* 

@@ -17,6 +17,6 @@ form taxOfficeExample {
       valueResidue: integer = sellingPrice - privateDebt   
   }
   
-  if (sellingPrice) {
-  }
+  "Error"
+    testVar: integer = hasMaintLoan + hasBoughtHouse
 }
