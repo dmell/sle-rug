@@ -36,7 +36,7 @@ AQuestion cst2ast(Question q) {
 	case (Question)`<Str s> <Id x> : <Type t> = <Expr e>`
 			: return computedQuestion("<s>", "<x>", cst2ast(t), cst2ast(e), src = q@\loc);
 	case (Question)`{ <Question* ss> }`
-			: return block([cst2as(s) | Question s <- ss], src = q@\loc); 
+			: return block([cst2ast(s) | Question s <- ss], src = q@\loc); 
 	case (Question)`if ( <Expr e> ) { <Question* ss> }`
 			: return ifThenQuestion(cst2ast(e), [cst2ast (s) | Question s <- ss], src = q@\loc);
 	case (Question)`if ( <Expr e> ) { <Question* ss> } else { <Question* xx> }`
