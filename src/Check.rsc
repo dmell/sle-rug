@@ -104,7 +104,7 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
     case ref(str x, src = loc u):
        	return { error("Undeclared question", u) | useDef[u] == {} };
     case exprCons(AExpr expr, src = loc u):
-     	return {check (expr, tenv, useDef)};
+     	return check (expr, tenv, useDef);
     case mul (AExpr l , AExpr r, src = loc u):
       	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(l, tenv, useDef) != tint() };
     case div (AExpr l , AExpr r, src = loc u):
