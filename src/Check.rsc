@@ -78,15 +78,15 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef){
   			+   check(expr, tenv, useDef);
 		}
 		case block(list[AQuestion] questions, src = loc l):{
-			return ( {} | it + check(q, tenv, useDef) | /AQuestion q <- questions);
+			return ( {} | it + check(quest, tenv, useDef) | /AQuestion quest <- questions);
 		}
 		case ifThenQuestion(AExpr condition, list[AQuestion] questions, src = loc l):{
-			return ( {} | it + check(q, tenv, useDef) | /AQuestion q <- questions)
+			return ( {} | it + check(quest, tenv, useDef) | /AQuestion quest <- questions)
 			+	{error("Condition is not boolean",l) | typeOf(condition, tenv, useDef) != tbool()}
 			+	check(condition, tenv, useDef);
 		}
-		case ifThenElseQuestion(AExpr condition, list[AQuestion] questions, list[AQuestion] questions2):{
-			return ( {} | it + check(q, tenv, useDef) | /AQuestion q <- questions)
+		case ifThenElseQuestion(AExpr condition, list[AQuestion] questions, list[AQuestion] questions2, src = loc l):{
+			return ( {} | it + check(quest, tenv, useDef) | /AQuestion quest <- questions)
 			+  	( {} | it + check(q2, tenv, useDef) | /AQuestion q2 <- questions2)
 			+	{error("Condition is not boolean",l) | typeOf(condition, tenv, useDef) != tbool()}
 			+  	check(condition, tenv, useDef);
@@ -104,7 +104,7 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
     case ref(str x, src = loc u):
        	return { error("Undeclared question", u) | useDef[u] == {} };
     case exprCons(AExpr expr, src = loc u):
-     	return {check (expr, tenv, useDef)};
+     	return check (expr, tenv, useDef);
     case mul (AExpr l , AExpr r, src = loc u):
       	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(l, tenv, useDef) != tint() };
     case div (AExpr l , AExpr r, src = loc u):
@@ -113,8 +113,8 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
 	 return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(l, tenv, useDef) != tint() };
     case add (AExpr l , AExpr r, src = loc u):
       	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(l, tenv, useDef) != tint() };
-    case not (AExpr e, src = loc u):
-      	return { error("Uncompatible types", u) | typeOf(e, tenv, useDef) != tbool()};
+    case not (AExpr exp, src = loc u):
+      	return { error("Uncompatible types", u) | typeOf(exp, tenv, useDef) != tbool()};
     case or (AExpr l , AExpr r, src = loc u):
       	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tbool() || typeOf(l, tenv, useDef) != tbool() };
     case and (AExpr l , AExpr r, src = loc u):
@@ -144,10 +144,10 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
       return tstr();
     case intCons(int i, src = loc u):
       return tint();
-    case boolCons(Bool b, src = loc u):
+    case boolCons(bool b, src = loc u):
       return tbool();
-    case exprCons(AExpr e, src = loc u):
-      return typeOf(e, tenv, useDef);
+    case exprCons(AExpr exp, src = loc u):
+      return typeOf(exp, tenv, useDef);
     case mul(AExpr l, AExpr r, src = loc u):{
     	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
     		return tint();
@@ -158,13 +158,13 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
     		return tint();
     	else
-    		return tunknonw();
+    		return tunknown();
     }
     case sub(AExpr l, AExpr r, src = loc u):{
     	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
     		return tint();
     	else
-    		return tunknonw();
+    		return tunknown();
     }
     case add(AExpr l, AExpr r, src = loc u):{
     	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
@@ -172,8 +172,8 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     	else
     		return tunknown();
     }
-    case not(AExpr e, src = loc u):{
-    	if(typeOf(e, tenv, useDef) == tbool())
+    case not(AExpr exp, src = loc u):{
+    	if(typeOf(exp, tenv, useDef) == tbool())
     		return tbool();
     	else
     		return tunknown();
@@ -216,13 +216,13 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     }
     case equal(AExpr l, AExpr r, src = loc u):{
     	if(typeOf(l,tenv,useDef) == typeOf(r,tenv,useDef))
-    		return typeOf(l, tenv, usedef);
+    		return typeOf(l, tenv, useDef);
     	else
     		return tunknown();
     }
     case notEqual(AExpr l, AExpr r, src = loc u):{
     	if(typeOf(l,tenv,useDef) == typeOf(r,tenv,useDef))
-    		return typeOf(l, tenv, usedef);
+    		return typeOf(l, tenv, useDef);
     	else
     		return tunknown();
     }
