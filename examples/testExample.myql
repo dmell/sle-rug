@@ -1,0 +1,38 @@
+form testForm {
+  "Name"
+    name : string
+  "Money in bank"
+    bank : integer
+    
+  // reference to undefined question
+  "All money:"
+    allMoney : integer = bank + wallet
+   
+  // condition is not boolean  
+  if (bank) {
+  }
+   
+  "Safe?"
+    safe : boolean
+   
+   // uncompatible types x2
+  "Total money:"
+    totalMoney : integer = safe + bank
+
+  "Total money, but with parenthesis: "
+    totalMoney2 : integer = (safe + bank)
+    
+    // duplicate question with different types
+  "Do you have a second name?"
+     name : boolean
+   
+   // warning: same label for different questions
+   "Money in bank"
+     money: integer
+   
+   // warning: different label for occurences of same question  
+   "In the meantime did you buy a safe or do you still have it?"
+     safe : boolean
+     
+  
+}
