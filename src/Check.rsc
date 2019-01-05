@@ -224,6 +224,6 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     	else
     		return tunknown();
     }
-    default: tunknonw();
+    default: tunknown();
   }; 
 }
