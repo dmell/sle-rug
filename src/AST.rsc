@@ -45,8 +45,3 @@ data AType(loc src = |tmp:///|)
 	= integer()
 	| boolean()
 	| string();
-	
-AForm prove()
-	= form ("Random form",[
-	question ("Random question ?", "x_2_10", boolean())
-	]);
