@@ -180,10 +180,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     		return tunknown();
     }
     case add(AExpr l, AExpr r, src = loc u):{
-    	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
-    		return tint();
-    	else
-    		return tunknown();
+    	return (typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint()) ? tint() : tunknonw();
     }
     case not(AExpr e, src = loc u):{
     	if(typeOf(e, tenv, useDef) == tbool())
