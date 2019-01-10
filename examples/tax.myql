@@ -16,7 +16,5 @@ form taxOfficeExample {
     "Value residue:"
       valueResidue: integer = sellingPrice - privateDebt   
   }
-  
-  "Error"
-    testVar: integer = hasMaintLoan + hasBoughtHouse
+
 }

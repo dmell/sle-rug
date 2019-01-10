@@ -27,26 +27,25 @@ data Input
 // produce an environment which for each question has a default value
 // (e.g. 0 for int, "" for str etc.)
 VEnv initialEnv(AForm f) {
-	return (q.id: vbool(false) | AQuestion q <- f.questions, q has ty, q.ty == boolean())
-		 + (q.id: vint(0) | AQuestion q <- f.questions, q has ty, q.ty == integer()) 
-		 + (q.id: vstr("") | AQuestion q <- f.questions, q has ty, q.ty == string());
+	return (q.id: vbool(false) | /AQuestion q <- f.questions, q has ty && q.ty == boolean(src = q.ty.src))
+		 + (q.id: vint(0) | /AQuestion q <- f.questions, q has ty && q.ty == integer(src = q.ty.src)) 
+		 + (q.id: vstr("") | /AQuestion q <- f.questions, q has ty && q.ty == string(src = q.ty.src));
 }
 
 VEnv initialEnv2(AForm f) {
 	VEnv envir = ();
-		
-	visit(f.questions){
+	visit(f){
 	
 		case question(str qtext, str id, AType ty, src = loc s):{
-			if (ty == boolean()) envir += (id : vbool(false));
-			if (ty == integer()) envir += (id : vint(0));
-			if (ty == string())  envir += (id : vstr(""));
+			if (ty == boolean(src = ty.src)) envir += (id : vbool(false));
+			if (ty == integer(src = ty.src)) envir += (id : vint(0));
+			if (ty == string(src = ty.src))  envir += (id : vstr(""));
 		}
 		
 		case computedQuestion(str qtext, str id, AType ty, AExpr_, src = loc s):{
-			if (ty == integer()) envir += (id : vint(0));
-			if (ty == boolean()) envir += (id : vbool(false));
-			if (ty == string())  envir += (id : vstr(""));
+			if (ty == integer(src = ty.src)) envir += (id : vint(0));
+			if (ty == boolean(src = ty.src)) envir += (id : vbool(false));
+			if (ty == string(src = ty.src))  envir += (id : vstr(""));
 		}	
 	}
 	return envir;
@@ -71,8 +70,26 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
 				return (id : inp.\value);
 			}
 		}
-		case computedQuestion(str qtext, str id, AType ty, AExpr):{
-			return ();
+		case computedQuestion(str qtext, str id, AType ty, AExpr e):{
+			return (id : eval(e));
+		}
+		
+		case block(list[AQuestion] questions):{
+			return ( () | it + eval(q, venv) | /AQuestion q <- questions);
+		}
+		
+		case block(list[AQuestion] questions):{
+			return ( () | it + eval(q, venv) | /AQuestion q <- questions);
+		}
+		case ifThenQuestion(AExpr condition, list[AQuestion] questions):{
+			return ( () | it + eval(q, venv) | /AQuestion q <- f.questions, eval(condition) == vbool(true)); 
+		}
+		case ifThenElseQuestion(AExpr condition, list[AQuestion] questions, list[AQuestion] questions2):{
+			if (eval(condition) == vbool(true)){
+				return ( () | it + eval(q, venv) | /AQuestion q <- questions); 
+			} else{
+				return ( () | it + eval(q, venv) | /AQuestion q <- questions2);
+			}
 		}
 	}
   return (); 
