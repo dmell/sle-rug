@@ -2,6 +2,7 @@ module Eval
 
 import AST;
 import Resolve;
+import IO;
 
 /*
  * Implement big-step semantics for QL
@@ -32,25 +33,6 @@ VEnv initialEnv(AForm f) {
 		 + (q.id: vstr("") | /AQuestion q <- f.questions, q has ty && q.ty == string(src = q.ty.src));
 }
 
-VEnv initialEnv2(AForm f) {
-	VEnv envir = ();
-	visit(f){
-	
-		case question(str qtext, str id, AType ty, src = loc s):{
-			if (ty == boolean(src = ty.src)) envir += (id : vbool(false));
-			if (ty == integer(src = ty.src)) envir += (id : vint(0));
-			if (ty == string(src = ty.src))  envir += (id : vstr(""));
-		}
-		
-		case computedQuestion(str qtext, str id, AType ty, AExpr_, src = loc s):{
-			if (ty == integer(src = ty.src)) envir += (id : vint(0));
-			if (ty == boolean(src = ty.src)) envir += (id : vbool(false));
-			if (ty == string(src = ty.src))  envir += (id : vstr(""));
-		}	
-	}
-	return envir;
-}
-
 // Because of out-of-order use and declaration of questions
 // we use the solve primitive in Rascal to find the fixpoint of venv.
 VEnv eval(AForm f, Input inp, VEnv venv) {
@@ -60,42 +42,60 @@ VEnv eval(AForm f, Input inp, VEnv venv) {
 }
 
 VEnv evalOnce(AForm f, Input inp, VEnv venv) {
-  return ( () | it + eval(q, venv) | /AQuestion q <- f.questions); 
+	for (AQuestion q <- f.questions){
+		venv = eval(q,inp,venv);
+	}
+   return venv; 
 }
 
 VEnv eval(AQuestion q, Input inp, VEnv venv) {
 	switch(q){
 		case question(str qtext, str id, AType ty):{
 			if (id == inp.question){
-				return (id : inp.\value);
+				venv[id] = inp.\value;
 			}
 		}
 		case computedQuestion(str qtext, str id, AType ty, AExpr e):{
-			return (id : eval(e));
+			// return (id : eval(e,venv));
+			venv[id] = eval(e,venv);
 		}
 		
 		case block(list[AQuestion] questions):{
-			return ( () | it + eval(q, venv) | /AQuestion q <- questions);
+			for (AQuestion q <- questions){
+				venv = eval(q,inp,venv);
+			}
 		}
 		
 		case block(list[AQuestion] questions):{
-			return ( () | it + eval(q, venv) | /AQuestion q <- questions);
+			 for (AQuestion q <- questions){
+				venv = eval(q,inp,venv);
+			}
 		}
 		case ifThenQuestion(AExpr condition, list[AQuestion] questions):{
-			return ( () | it + eval(q, venv) | /AQuestion q <- f.questions, eval(condition) == vbool(true)); 
+			if(eval(condition,venv) == vbool(true)){
+				for (AQuestion q <- questions){
+					venv = eval(q,inp,venv);
+				}
+			}
+			 
 		}
 		case ifThenElseQuestion(AExpr condition, list[AQuestion] questions, list[AQuestion] questions2):{
 			if (eval(condition) == vbool(true)){
-				return ( () | it + eval(q, venv) | /AQuestion q <- questions); 
+				for (AQuestion q <- questions){
+					venv = eval(q,inp,venv);
+				}; 
 			} else{
-				return ( () | it + eval(q, venv) | /AQuestion q <- questions2);
+				for (AQuestion q <- questions2){
+					venv = eval(q,inp,venv);
+				};
 			}
 		}
 	}
-  return (); 
+  return venv; 
 }
 
 Value eval(AExpr e, VEnv venv) {
+  
   switch (e) {
     case ref(str x): return venv[x];
     case strCons(str s): return vstr(s);
