@@ -133,9 +133,9 @@ HTML5Node question2html(ifThenQuestion(AExpr e, list[AQuestion] questions, src=l
 }
 
 // Generate HTML for if-else block
-HTML5Node question2html(fThenElseQuestion(AExpr e, list[AQuestion] questions, list[AQuestion] questions2, src=loc u)) {
+HTML5Node question2html(ifThenElseQuestion(AExpr e, list[AQuestion] questions, list[AQuestion] questions2, src=loc u)) {
   HTML5Node ifQuestionsDiv = div([question2html(q) | \AQuestion q <- questions] + [id("if_<u.begin.line>_<u.begin.column>"),class("condition_false")]);
-  HTML5Node elseQuestionsDiv = div([question2html(q) | \AQuestion q <- questions] + [id("else_<u.begin.line>_<u.begin.column>")]);
+  HTML5Node elseQuestionsDiv = div([question2html(q) | \AQuestion q <- questions2] + [id("else_<u.begin.line>_<u.begin.column>")]);
   return div([class("ifElse"),ifQuestionsDiv, elseQuestionsDiv]);
 }
 
@@ -157,11 +157,11 @@ str computeQuestions(list[AQuestion] questions){
 		if (q has condition){
 			if (q has questions2){
 				assigns += "if ("+expr2js(q.condition)+" == \"true\"){\n"+
-				computedQuestions(q.questions) +
+				computeQuestions(q.questions) +
 				"\n document.getElementById(\"if_<q.src.begin.line>_<q.src.begin.column>\").classList.remove(\"condition_false\");
 				'\n document.getElementById(\"else_<q.src.begin.line>_<q.src.begin.column>\").classList.add(\"condition_false\");
 				'}else{" +
-				computedQuestions(q.questions2) + 
+				computeQuestions(q.questions2) + 
 				"}";
 			}else{
 				assigns +="if ("+expr2js(q.condition)+" == \"true\"){\n"+
@@ -214,7 +214,7 @@ str question2js(ifThenQuestion(AExpr condition, list[AQuestion] questions)) {
   }
   return questionscode ;
 }
-str question2js(ifThenElsequestion(AExpr condition, list[AQuestion] questions, list[AQuestion] questions2)) {
+str question2js(ifThenElseQuestion(AExpr condition, list[AQuestion] questions, list[AQuestion] questions2)) {
   str questionscode = "";
   for(AQuestion q <- questions){
   	questionscode += question2js(q) + "\n";
