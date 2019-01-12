@@ -162,7 +162,9 @@ str computeQuestions(list[AQuestion] questions){
 				'\n document.getElementById(\"else_<q.src.begin.line>_<q.src.begin.column>\").classList.add(\"condition_false\");
 				'}else{" +
 				computeQuestions(q.questions2) + 
-				"}";
+				"\n document.getElementById(\"if_<q.src.begin.line>_<q.src.begin.column>\").classList.add(\"condition_false\");
+				'\n document.getElementById(\"else_<q.src.begin.line>_<q.src.begin.column>\").classList.remove(\"condition_false\");
+				'}";
 			}else{
 				assigns +="if ("+expr2js(q.condition)+" == \"true\"){\n"+
 				computeQuestions(q.questions) +
