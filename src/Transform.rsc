@@ -30,7 +30,10 @@ import List;
  */
  
 AForm flatten(AForm f) {
-	AForm form = form (f.name,[]);
+	/*
+	AForm form = form(f.name, []);
+	form.questions = flattenQuestion([],form.questions)
+	*/
 	f.questions = flattenQuestion([],f.questions);
   return f; 
 }
@@ -81,5 +84,6 @@ AExpr makeAndExpr (list[AExpr] exs){
  */
  
  start[Form] rename(start[Form] f, loc useOrDef, str newName, UseDef useDef) {
+ 			
    return f; 
  } 
