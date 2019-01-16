@@ -171,7 +171,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
     		return tint();
     	else
-    		return tunknonw();
+    		return tunknown();
     }
     case sub(AExpr l, AExpr r, src = loc u):{
     	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
@@ -180,7 +180,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     		return tunknown();
     }
     case add(AExpr l, AExpr r, src = loc u):{
-    	return (typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint()) ? tint() : tunknonw();
+    	return (typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint()) ? tint() : tunknown();
     }
     case not(AExpr e, src = loc u):{
     	if(typeOf(e, tenv, useDef) == tbool())
