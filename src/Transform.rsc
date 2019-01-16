@@ -1,8 +1,9 @@
-module Transform
+ module Transform
 
 import Syntax;
 import Resolve;
 import AST;
+import List;
 
 /* 
  * Transforming QL forms
@@ -29,7 +30,47 @@ import AST;
  */
  
 AForm flatten(AForm f) {
+	AForm form = form (f.name,[]);
+	f.questions = flattenQuestion([],f.questions);
   return f; 
+}
+
+list[AQuestion] flattenQuestion (list[AExpr] conditions, list[AQuestion] questions){
+	list[AQuestion] questionList = [];
+	for(AQuestion q <- questions){
+		switch(q){
+			case question(str qtext, str id, AType ty):{
+				questionList += ifThenQuestion(makeAndExpr (conditions + [boolCons(true)]), [question(qtext,id,ty)]);
+			}
+			case computedQuestion(str qtext, str id, AType ty, AExpr expr):{
+				questionList += ifThenQuestion( makeAndExpr (conditions + [boolCons(true)]), [ computedQuestion(qtext,id,ty,expr)]);
+			}
+			case ifThenQuestion (AExpr condition, list[AQuestion] questions):{
+				if(size(questions) == 1){
+					
+					questionList += ifThenQuestion(makeAndExpr(conditions + [condition]),[questions[0]]);
+				}else
+					questionList += flattenQuestion (conditions + [condition], questions);
+			}
+			case ifThenElseQuestion (AExpr condition, list[AQuestion] questions, list[AQuestion] questions2):{
+				questionList += flattenQuestion (conditions + [condition], questions) +
+								 flattenQuestion (conditions , questions2);
+			}
+		}
+	}
+	return questionList;
+}
+AExpr makeAndExpr (list[AExpr] exs){
+	if(size(exs) == 1){
+		return exs[0];
+	}	
+	AExpr condition = exs[0];
+		for(AExpr e <- exs[1..] ){
+			if(e != boolCons(true)){
+				condition = and(condition,e);
+			}
+		}
+	return condition;
 }
 
 /* Rename refactoring:

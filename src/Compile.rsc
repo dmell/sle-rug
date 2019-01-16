@@ -94,7 +94,7 @@ HTML5Node form2html(AForm f) {
 	  					id("form_" + f.name),
 	  					h1("Questionnaire <f.name>"),
 						questions2html(f.questions),
-						button("submit",onclick("myFunction()"))		
+						button("submit <f.name>",onclick("myFunction()"))		
   				)
   			)
   );
@@ -158,17 +158,17 @@ str computeQuestions(list[AQuestion] questions){
 			if (q has questions2){
 				assigns += "if ("+expr2js(q.condition)+" == \"true\"){\n"+
 				computeQuestions(q.questions) +
-				"\n document.getElementById(\"if_<q.src.begin.line>_<q.src.begin.column>\").classList.remove(\"condition_false\");
-				'\n document.getElementById(\"else_<q.src.begin.line>_<q.src.begin.column>\").classList.add(\"condition_false\");
+				" \tdocument.getElementById(\"if_<q.src.begin.line>_<q.src.begin.column>\").classList.remove(\"condition_false\");
+				' \tdocument.getElementById(\"else_<q.src.begin.line>_<q.src.begin.column>\").classList.add(\"condition_false\");
 				'}else{" +
 				computeQuestions(q.questions2) + 
-				"\n document.getElementById(\"if_<q.src.begin.line>_<q.src.begin.column>\").classList.add(\"condition_false\");
-				'\n document.getElementById(\"else_<q.src.begin.line>_<q.src.begin.column>\").classList.remove(\"condition_false\");
+				" \tdocument.getElementById(\"if_<q.src.begin.line>_<q.src.begin.column>\").classList.add(\"condition_false\");
+				' \tdocument.getElementById(\"else_<q.src.begin.line>_<q.src.begin.column>\").classList.remove(\"condition_false\");
 				'}";
 			}else{
 				assigns +="if ("+expr2js(q.condition)+" == \"true\"){\n"+
 				computeQuestions(q.questions) +
-				"document.getElementById(\"if_<q.src.begin.line>_<q.src.begin.column>\").classList.remove(\"condition_false\");
+				"\tdocument.getElementById(\"if_<q.src.begin.line>_<q.src.begin.column>\").classList.remove(\"condition_false\");
 				'}else{
 				'document.getElementById(\"if_<q.src.begin.line>_<q.src.begin.column>\").classList.add(\"condition_false\");
 				'}";
