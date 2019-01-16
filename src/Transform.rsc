@@ -83,7 +83,12 @@ AExpr makeAndExpr (list[AExpr] exs){
  *
  */
  
- start[Form] rename(start[Form] f, loc useOrDef, str newName, UseDef useDef) {
- 			
-   return f; 
- } 
+start[Form] rename(start[Form] f, loc useOrDef, str newName, UseDef useDef) {
+  set[loc] locs = {useOrDef};
+  
+  // uses
+  
+  // defs
+  
+  return f; 
+} 
