@@ -86,5 +86,8 @@ start[Form] rename(start[Form] f, loc useOrDef, str newName, UseDef useDef) {
   
 	// defs
   
+  	visit (f) {
+    	case (Id)`<Id x>` =>  (Id)`<newName>` when "<x>" == oldName
+  	}
 	return f; 
 } 

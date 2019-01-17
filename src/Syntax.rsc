@@ -22,7 +22,7 @@ syntax Question
 // TODO: +, -, *, /, &&, ||, !, >, <, <=, >=, ==, !=, literals (bool, int, str)
 // Think about disambiguation using priorities and associativity
 // and use C/Java style precedence rules (look it up on the internet)
-<<<<<<< HEAD
+
 syntax Expr   = Id \ "true" \ "false" // true/false are reserved keywords.
   | Str
   | Bool
@@ -46,7 +46,7 @@ syntax Expr   = Id \ "true" \ "false" // true/false are reserved keywords.
   > left Expr "&&" Expr
   > left Expr "||" Expr
   ;
-=======
+
 syntax Expr 
 	= Id \ "true" \ "false" // true/false are reserved keywords.
 	| Str
@@ -71,7 +71,7 @@ syntax Expr
 	> left Expr "&&" Expr
 	> left Expr "||" Expr
 	;
->>>>>>> b9248114bd04eb2184ba6a5afe8c01eeeea8487b
+
   
 syntax Type
 	= "integer" | "boolean" | "string";  
@@ -80,14 +80,9 @@ syntax Type
 
   
 lexical Str  = "\"" ![\"]* "\"";
-lexical Int 
-<<<<<<< HEAD
-  = [0-9]+;
-=======
-	= [0]
-	| [1-9][0-9]*
-	;
->>>>>>> b9248114bd04eb2184ba6a5afe8c01eeeea8487b
+lexical Int  = [0-9]+;
+
+
 
 lexical Bool
 	= "true"

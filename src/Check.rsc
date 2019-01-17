@@ -30,7 +30,7 @@ TEnv collect (AForm f){
 	TEnv envir = {};
 	visit(f){
 	
-		case question(str qtext, str id, AType ty, src = loc s):{
+		case question(str qtext, str id, AType ty, src = loc s) : {
 			envir += {<s, id, qtext, mapAType(ty)>};
 		}
 		
