@@ -1,6 +1,6 @@
 
 body{
-    background: #ffdba6;
+   background: #ffdba6;
     font-family: sans-serif;
 }
 .main{
@@ -11,7 +11,6 @@ body{
     margin: auto;
     max-width: 600px;
 }
-
 h1{
 	text-align:center;
 }
@@ -34,12 +33,12 @@ button{
     margin-bottom: 40px;
 }
 .computedQuestion{
-		padding: 10px;
+	padding: 10px;
     background: #efc792;
     border-radius: 5px;
     margin-bottom: 40px;
 }
-.questionBlock,.ifElse{
+.questionBlock, .ifElse{
 	padding: 10px;
 	background: #dfdad3;
     border-radius: 5px;

@@ -5,6 +5,10 @@ import Resolve;
 import AST;
 import List;
 
+import CST2AST;
+import IO;
+import ParseTree;
+
 /* 
  * Transforming QL forms
  */
@@ -78,16 +82,46 @@ AExpr makeAndExpr (list[AExpr] exs){
  * Use the results of name resolution to find the equivalence class of a name.
  *
  */
- 
+
 start[Form] rename(start[Form] f, loc useOrDef, str newName, UseDef useDef) {
-	set[loc] locs = {useOrDef};
-  
-	// uses
-  
-	// defs
-  
-  	visit (f) {
-    	case (Id)`<Id x>` =>  (Id)`<newName>` when "<x>" == oldName
+  	Id newId;
+  	// check if the new id is valid
+  	try {
+  		newId = parse(#Id, newName);
   	}
-	return f; 
+  	catch:{
+  		print("Error: Invalid id name\n Returning the same tree with no changes\n");
+  		return f;
+  	}
+	
+	ast = cst2ast(f);
+  	// check that the name is not in use
+  	assert newName notin defs(ast)<0> : "name in use";
+  	
+  	
+	str getOldName (AForm form, loc auxUseOrDef){
+	  	visit(form){
+	  		case question(str qtext, str id, AType ty, src = loc s) : {
+	  			if (s == auxUseOrDef){
+	  				return id;
+	  			}
+	  		}
+	  		case computedQuestion(str qtext, str id, AType ty, AExpr expr, src = loc s):{
+	  			if (s == auxUOrDef){
+	  				return id;
+	  			}
+	  		}
+	  		case ref(str name, src = loc s) : {
+	  			if (s == auxUseOrDef){
+	  				return name;
+	  			}
+	  		}			
+	  	}
+	}
+
+	oldName = getOldName(ast, useOrDef);
+  
+  	return visit (f) {
+    	case (Id)`<Id x>` =>  newId when "<x>" == oldName
+  	}
 } 
