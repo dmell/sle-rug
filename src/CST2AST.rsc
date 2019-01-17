@@ -48,7 +48,7 @@ AExpr cst2ast(Expr e) {
 	switch (e) {
 	    case (Expr)`<Id x>`: return ref("<x>", src=e@\loc);
 	    case (Expr)`<Str s>`:
-	    	return stringCons("<s>", src=e@\loc);
+	    	return strCons("<s>", src=e@\loc);
 	    case (Expr)`<Int i>`:
 	    	return intCons(toInt("<i>"), src=e@\loc);
 	    case (Expr)`<Bool b>`:

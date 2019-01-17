@@ -139,8 +139,10 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
     	case notEqual (AExpr l , AExpr r, src = loc u):
       		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef)}
     			+ check(l,tenv,useDef)
-    			+ check(r,tenv,useDef);    
+    			+ check(r,tenv,useDef); 
+    	default: return {error("There was a problem but we do not know what")};    
  	}
+ 	
 }
 
 Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
@@ -200,37 +202,37 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
    		}    
     	case gt(AExpr l, AExpr r, src = loc u):{
     		if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
-    			return tint();
+    			return tbool();
     		else
     			return tunknown();
     	}
     	case lt(AExpr l, AExpr r, src = loc u):{
     		if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
-    			return tint();
+    			return tbool();
     		else
     			return tunknown();
    		}
     	case geq(AExpr l, AExpr r, src = loc u):{
     		if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
-    			return tint();
+    			return tbool();
     		else
     			return tunknown();
     	}
     	case leq(AExpr l, AExpr r, src = loc u):{
     		if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
-    			return tint();
+    			return tbool();
     		else
     			return tunknown();
     	}
     	case equal(AExpr l, AExpr r, src = loc u):{
     		if(typeOf(l,tenv,useDef) == typeOf(r,tenv,useDef))
-    			return typeOf(l, tenv, usedef);
+    			return tbool();
     		else
     			return tunknown();
     	}
     	case notEqual(AExpr l, AExpr r, src = loc u):{
     		if(typeOf(l,tenv,useDef) == typeOf(r,tenv,useDef))
-    			return typeOf(l, tenv, usedef);
+    			return tbool();
     		else
     			return tunknown();
    	 	}
