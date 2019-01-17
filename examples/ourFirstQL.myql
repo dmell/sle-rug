@@ -1,15 +1,18 @@
 form exams {
 "Have you studied enough"
 	studyHours: boolean
-	
+{	
 "How many hours?"
 	hours: integer
 
 "which course did you like the most"
 	course: string
-	
- if (  == 4 ) {
- 	"d"
- 	dsf: integer
- }
+}
+
+if ( studyHours == true) {
+	"why did you choose it?"
+	reason: string
+}
+
+
 }

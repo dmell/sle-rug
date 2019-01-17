@@ -157,7 +157,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     		return typeOf(ex,tenv,useDef);
     	case intCons(int i, src = loc u):
       		return tint();
-    	case boolCons(Bool b, src = loc u):
+    	case boolCons(bool b, src = loc u):
       		return tbool();
     	case exprCons(AExpr e, src = loc u):
       		return typeOf(e, tenv, useDef);
