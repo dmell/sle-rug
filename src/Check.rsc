@@ -6,22 +6,22 @@ import Message; // see standard library
 import Set; // for errors
 
 data Type
-  = tint()
-  | tbool()
-  | tstr()
-  | tunknown()
-  ;
+  	= tint()
+	| tbool()
+  	| tstr()
+  	| tunknown()
+  	;
 
 // the type environment consisting of defined questions in the form 
 alias TEnv = rel[loc def, str name, str label, Type \type];
 
 Type mapAType(AType at)
 {
-  switch (at) {
-    case integer(): return tint();
-    case boolean(): return tbool();
-    case string(): return tstr();
-  }
+ 	switch (at) {
+   		case integer(): return tint();
+    	case boolean(): return tbool();
+    	case string(): return tstr();
+  	}
 }
 
 // To avoid recursively traversing the form, use the `visit` construct
@@ -43,13 +43,12 @@ TEnv collect (AForm f){
 
 
 set[Message] check(AForm f, TEnv tenv, UseDef useDef) 
-  = ( {} | it + check(q, tenv, useDef) | /AQuestion q <- f.questions);
+	= ( {} | it + check(q, tenv, useDef) | /AQuestion q <- f.questions);
 
 // - produce an error if there are declared questions with the same name but different types.
 // - duplicate labels should trigger a warning 
 // - the declared type computed questions should match the type of the expression.
 set[Message] check(AQuestion q, TEnv tenv, UseDef useDef){
-
 	switch (q) {
 		case question(str qtext, str id, AType ty, src = loc l): {
 			return  { error("Duplicate question with different type", l) | size((tenv<1,3>)[id]) > 1}
@@ -83,161 +82,160 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef){
 
 // Check operand compatibility with operators.
 // E.g. for an addition node add(lhs, rhs), 
-//   the requirement is that typeOf(lhs) == typeOf(rhs) == tint()
+// the requirement is that typeOf(lhs) == typeOf(rhs) == tint()
 
 set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
-  
-  switch (e) {
-    case ref(str x, src = loc u):
-       	return { error("Reference to undefined question", u) | useDef[u] == {} };
-    case exprCons(AExpr expr, src = loc u):
-     	return check (expr, tenv, useDef);
-    case mul (AExpr l , AExpr r, src = loc u):
-      	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(l, tenv, useDef) != tint() }
+  	switch (e) {
+    	case ref(str x, src = loc u):
+       		return { error("Reference to undefined question", u) | useDef[u] == {} };
+    	case exprCons(AExpr expr, src = loc u):
+     		return check (expr, tenv, useDef);
+    	case mul (AExpr l , AExpr r, src = loc u):
+      		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(l, tenv, useDef) != tint() }
     			+ check(l,tenv,useDef)
     			+ check(r,tenv,useDef);
-    case div (AExpr l , AExpr r, src = loc u):
-       	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(l, tenv, useDef) != tint() }
+    	case div (AExpr l , AExpr r, src = loc u):
+       		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(l, tenv, useDef) != tint() }
     			+ check(l,tenv,useDef)
     			+ check(r,tenv,useDef);
-    case sub (AExpr l , AExpr r, src = loc u):
-	  	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(l, tenv, useDef) != tint() }
+    	case sub (AExpr l , AExpr r, src = loc u):
+	  		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(l, tenv, useDef) != tint() }
     			+ check(l,tenv,useDef)
     			+ check(r,tenv,useDef);
-    case add (AExpr l , AExpr r, src = loc u):
-      	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(l, tenv, useDef) != tint() }
+    	case add (AExpr l , AExpr r, src = loc u):
+      		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(l, tenv, useDef) != tint() }
     			+ check(l,tenv,useDef)
     			+ check(r,tenv,useDef);
-    case not (AExpr e, src = loc u):
-      	return { error("Uncompatible types", u) | typeOf(e, tenv, useDef) != tbool()};
-    case or (AExpr l , AExpr r, src = loc u):
-      	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tbool() || typeOf(l, tenv, useDef) != tbool() }
+    	case not (AExpr e, src = loc u):
+      		return { error("Uncompatible types", u) | typeOf(e, tenv, useDef) != tbool()};
+    	case or (AExpr l , AExpr r, src = loc u):
+      		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tbool() || typeOf(l, tenv, useDef) != tbool() }
     			+ check(l,tenv,useDef)
     			+ check(r,tenv,useDef);
-    case and (AExpr l , AExpr r, src = loc u):
-      	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tbool() || typeOf(l, tenv, useDef) != tbool() }
+    	case and (AExpr l , AExpr r, src = loc u):
+      		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tbool() || typeOf(l, tenv, useDef) != tbool() }
     			+ check(l,tenv,useDef)
     			+ check(r,tenv,useDef);
-	case gt (AExpr l , AExpr r, src = loc u):
-      	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(r, tenv, useDef) != tint()}
+		case gt (AExpr l , AExpr r, src = loc u):
+      		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(r, tenv, useDef) != tint()}
     			+ check(l,tenv,useDef)
     			+ check(r,tenv,useDef);
-    case lt (AExpr l , AExpr r, src = loc u):
-      	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(r, tenv, useDef) != tint()}
+    	case lt (AExpr l , AExpr r, src = loc u):
+      		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(r, tenv, useDef) != tint()}
     			+ check(l,tenv,useDef)
     			+ check(r,tenv,useDef);
-    case geq (AExpr l , AExpr r, src = loc u):
-      	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(r, tenv, useDef) != tint()}
+    	case geq (AExpr l , AExpr r, src = loc u):
+      		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(r, tenv, useDef) != tint()}
     			+ check(l,tenv,useDef)
     			+ check(r,tenv,useDef);
-    case leq (AExpr l , AExpr r, src = loc u):
-     	 return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(r, tenv, useDef) != tint()}
+    	case leq (AExpr l , AExpr r, src = loc u):
+     		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef) || typeOf(r, tenv, useDef) != tint() || typeOf(r, tenv, useDef) != tint()}
     			+ check(l,tenv,useDef)
     			+ check(r,tenv,useDef);
-    case equal (AExpr l , AExpr r, src = loc u):
-      	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef)}
+    	case equal (AExpr l , AExpr r, src = loc u):
+      		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef)}
     			+ check(l,tenv,useDef)
     			+ check(r,tenv,useDef);
-    case notEqual (AExpr l , AExpr r, src = loc u):
-      	return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef)}
+    	case notEqual (AExpr l , AExpr r, src = loc u):
+      		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef)}
     			+ check(l,tenv,useDef)
     			+ check(r,tenv,useDef);    
-  }
+ 	}
 }
 
 Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
-  switch (e) {
-    case ref(str x, src = loc u):  
-      if (<u, loc d> <- useDef, <d, x, _, Type t> <- tenv) {
-        return t;
-      }
-    case strCons(str s, src = loc u):
-      return tstr();
-    case exprCons (AExpr ex):
-    	return typeOf(ex,tenv,useDef);
-    case intCons(int i, src = loc u):
-      return tint();
-    case boolCons(Bool b, src = loc u):
-      return tbool();
-    case exprCons(AExpr e, src = loc u):
-      return typeOf(e, tenv, useDef);
-    case mul(AExpr l, AExpr r, src = loc u):{
-    	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
-    		return tint();
-    	else
-    		return tunknown();
-    }     
-    case div(AExpr l, AExpr r, src = loc u):{
-    	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
-    		return tint();
-    	else
-    		return tunknown();
-    }
-    case sub(AExpr l, AExpr r, src = loc u):{
-    	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
-    		return tint();
-    	else
-    		return tunknown();
-    }
-    case add(AExpr l, AExpr r, src = loc u):{
-    	return (typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint()) ? tint() : tunknown();
-    }
-    case not(AExpr e, src = loc u):{
-    	if(typeOf(e, tenv, useDef) == tbool())
-    		return tbool();
-    	else
-    		return tunknown();
-    }    
-    case and(AExpr l, AExpr r, src = loc u):{
-    	if(typeOf(l, tenv, useDef) == tbool() && typeOf(r, tenv, useDef) == tbool())
-    		return tbool();
-    	else
-    		return tunknown();
-    }    
-    case or(AExpr l, AExpr r, src = loc u):{
-    	if(typeOf(l, tenv, useDef) == tbool() && typeOf(r, tenv, useDef) == tbool())
-    		return tbool();
-    	else
-    		return tunknown();
-    }    
-    case gt(AExpr l, AExpr r, src = loc u):{
-    	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
-    		return tint();
-    	else
-    		return tunknown();
-    }
-    case lt(AExpr l, AExpr r, src = loc u):{
-    	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
-    		return tint();
-    	else
-    		return tunknown();
-    }
-    case geq(AExpr l, AExpr r, src = loc u):{
-    	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
-    		return tint();
-    	else
-    		return tunknown();
-    }
-    case leq(AExpr l, AExpr r, src = loc u):{
-    	if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
-    		return tint();
-    	else
-    		return tunknown();
-    }
-    case equal(AExpr l, AExpr r, src = loc u):{
-    	if(typeOf(l,tenv,useDef) == typeOf(r,tenv,useDef))
-    		return typeOf(l, tenv, usedef);
-    	else
-    		return tunknown();
-    }
-    case notEqual(AExpr l, AExpr r, src = loc u):{
-    	if(typeOf(l,tenv,useDef) == typeOf(r,tenv,useDef))
-    		return typeOf(l, tenv, usedef);
-    	else
-    		return tunknown();
-    }
-    default: return tunknonw();
-  }; 
-  return tunknown();
+  	switch (e) {
+    	case ref(str x, src = loc u):  
+      		if (<u, loc d> <- useDef, <d, x, _, Type t> <- tenv) {
+        		return t;
+      		}
+    	case strCons(str s, src = loc u):
+      		return tstr();
+    	case exprCons (AExpr ex):
+    		return typeOf(ex,tenv,useDef);
+    	case intCons(int i, src = loc u):
+      		return tint();
+    	case boolCons(Bool b, src = loc u):
+      		return tbool();
+    	case exprCons(AExpr e, src = loc u):
+      		return typeOf(e, tenv, useDef);
+    	case mul(AExpr l, AExpr r, src = loc u):{
+    		if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
+    			return tint();
+    		else
+    			return tunknown();
+    	}     
+    	case div(AExpr l, AExpr r, src = loc u):{
+    		if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
+    			return tint();
+    		else
+    			return tunknown();
+    	}
+    	case sub(AExpr l, AExpr r, src = loc u):{
+    		if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
+    			return tint();
+    		else
+    			return tunknown();
+    	}
+    	case add(AExpr l, AExpr r, src = loc u):{
+    		return (typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint()) ? tint() : tunknown();
+    	}
+    	case not(AExpr e, src = loc u):{
+    		if(typeOf(e, tenv, useDef) == tbool())
+    			return tbool();
+    		else
+    			return tunknown();
+    	}    
+    	case and(AExpr l, AExpr r, src = loc u):{
+    		if(typeOf(l, tenv, useDef) == tbool() && typeOf(r, tenv, useDef) == tbool())
+    			return tbool();
+    		else
+    			return tunknown();
+    	}    
+    	case or(AExpr l, AExpr r, src = loc u):{
+    		if(typeOf(l, tenv, useDef) == tbool() && typeOf(r, tenv, useDef) == tbool())
+    			return tbool();
+    		else
+    			return tunknown();
+   		}    
+    	case gt(AExpr l, AExpr r, src = loc u):{
+    		if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
+    			return tint();
+    		else
+    			return tunknown();
+    	}
+    	case lt(AExpr l, AExpr r, src = loc u):{
+    		if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
+    			return tint();
+    		else
+    			return tunknown();
+   		}
+    	case geq(AExpr l, AExpr r, src = loc u):{
+    		if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
+    			return tint();
+    		else
+    			return tunknown();
+    	}
+    	case leq(AExpr l, AExpr r, src = loc u):{
+    		if(typeOf(l,tenv,useDef) == tint() && typeOf(r,tenv,useDef) == tint())
+    			return tint();
+    		else
+    			return tunknown();
+    	}
+    	case equal(AExpr l, AExpr r, src = loc u):{
+    		if(typeOf(l,tenv,useDef) == typeOf(r,tenv,useDef))
+    			return typeOf(l, tenv, usedef);
+    		else
+    			return tunknown();
+    	}
+    	case notEqual(AExpr l, AExpr r, src = loc u):{
+    		if(typeOf(l,tenv,useDef) == typeOf(r,tenv,useDef))
+    			return typeOf(l, tenv, usedef);
+    		else
+    			return tunknown();
+   	 	}
+    	default: return tunknonw();
+  	}; 
+  	return tunknown();
 }
 
