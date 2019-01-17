@@ -53,14 +53,14 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef){
 		case question(str qtext, str id, AType ty, src = loc l): {
 			return  { error("Duplicate question with different type", l) | size((tenv<1,3>)[id]) > 1}
 			+	{ warning("Duplicate labels", l) | size((tenv<2,0>)[q.qtext]) > 1}
-			+	{ warning("Different label for ocurrences of the same question", l) | size((tenv<1,2>)[q.id]) > 1};
+			+	{ warning("Different label for occurrences of the same question", l) | size((tenv<1,2>)[q.id]) > 1};
 		}
 		case computedQuestion(str qtext, str id, AType ty, AExpr expr, src = loc l):{
 			return { error("Duplicate question with different type", l) | size((tenv<1,3>)[id]) > 1}
 			+	{ warning("Duplicate labels", l) | size((tenv<2,0>)[q.qtext]) > 1}
 			+	{ warning("Different label for ocurrences of the same question", l) | size((tenv<1,2>)[q.id]) > 1}
 			+	{ error("The declared type computed question does not match the type of the expression", l)
-  					| mapAType(ty) != typeOf(expr, tenv, useDef) }  			
+  					| mapAType(ty) != typeOf(expr, tenv, useDef) && typeOf(expr, tenv, useDef) != tunknown() }  			
   			+   check(expr, tenv, useDef);
 		}
 		case block(list[AQuestion] questions, src = loc l):{
