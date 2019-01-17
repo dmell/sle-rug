@@ -1,4 +1,4 @@
- module Transform
+module Transform
 
 import Syntax;
 import Resolve;
@@ -30,12 +30,8 @@ import List;
  */
  
 AForm flatten(AForm f) {
-	/*
-	AForm form = form(f.name, []);
-	form.questions = flattenQuestion([],form.questions)
-	*/
 	f.questions = flattenQuestion([],f.questions);
-  return f; 
+	return f; 
 }
 
 list[AQuestion] flattenQuestion (list[AExpr] conditions, list[AQuestion] questions){
@@ -52,7 +48,7 @@ list[AQuestion] flattenQuestion (list[AExpr] conditions, list[AQuestion] questio
 				if(size(questions) == 1){
 					
 					questionList += ifThenQuestion(makeAndExpr(conditions + [condition]),[questions[0]]);
-				}else
+				} else
 					questionList += flattenQuestion (conditions + [condition], questions);
 			}
 			case ifThenElseQuestion (AExpr condition, list[AQuestion] questions, list[AQuestion] questions2):{
@@ -84,11 +80,11 @@ AExpr makeAndExpr (list[AExpr] exs){
  */
  
 start[Form] rename(start[Form] f, loc useOrDef, str newName, UseDef useDef) {
-  set[loc] locs = {useOrDef};
+	set[loc] locs = {useOrDef};
   
-  // uses
+	// uses
   
-  // defs
+	// defs
   
-  return f; 
+	return f; 
 } 

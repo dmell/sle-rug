@@ -8,8 +8,7 @@ module AST
  */
 
 data AForm(loc src = |tmp:///|)
-  = form(str name, list[AQuestion] questions)
-  ;
+	= form(str name, list[AQuestion] questions);
 
 data AQuestion(loc src = |tmp:///|)
 	= question(str qtext, str id, AType ty)
@@ -21,25 +20,25 @@ data AQuestion(loc src = |tmp:///|)
 
 
 data AExpr(loc src = |tmp:///|)
-  = ref (str name)
-  | strCons (str s)
-  | intCons (int n)
-  | boolCons (bool b)
-  | exprCons (AExpr e)
-  | mul (AExpr l , AExpr r)
-  | div (AExpr l , AExpr r)
-  | add (AExpr l , AExpr r)
-  | sub (AExpr l , AExpr r)
-  | and (AExpr l , AExpr r)
-  | not (AExpr e)
-  | or (AExpr l , AExpr r)
-  | gt (AExpr l , AExpr r)
-  | lt (AExpr l , AExpr r)
-  | geq (AExpr l , AExpr r)
-  | leq (AExpr l , AExpr r)
-  | equal (AExpr l , AExpr r)
-  | notEqual (AExpr l , AExpr r)
-  ;
+	= ref (str name)
+	| strCons (str s)
+	| intCons (int n)
+	| boolCons (bool b)
+	| exprCons (AExpr e)
+	| mul (AExpr l , AExpr r)
+	| div (AExpr l , AExpr r)
+	| add (AExpr l , AExpr r)
+	| sub (AExpr l , AExpr r)
+	| and (AExpr l , AExpr r)
+	| not (AExpr e)
+	| or (AExpr l , AExpr r)
+	| gt (AExpr l , AExpr r)
+	| lt (AExpr l , AExpr r)
+	| geq (AExpr l , AExpr r)
+	| leq (AExpr l , AExpr r)
+	| equal (AExpr l , AExpr r)
+	| notEqual (AExpr l , AExpr r)
+	;
 
 data AType(loc src = |tmp:///|)
 	= integer()

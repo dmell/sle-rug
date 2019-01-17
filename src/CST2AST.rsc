@@ -17,9 +17,9 @@ import String;
  */
 
 AForm cst2ast(start[Form] sf) {
-  //Form f = sf.top; // remove layout before and after form
-  //return form("", [], src=f@\loc); 
-  return cst2ast(sf.top);
+	//Form f = sf.top; // remove layout before and after form
+	//return form("", [], src=f@\loc); 
+	return cst2ast(sf.top);
 }
 
 AForm cst2ast (f:(Form)`form <Id x> { <Question* ss> }`)
@@ -31,57 +31,57 @@ AForm cst2ast (f:(Form)`form <Id x> { <Question* ss> }`)
 
 AQuestion cst2ast(Question q) {
 	switch (q) {
-	case (Question)`<Str s> <Id x> : <Type t>`
+		case (Question)`<Str s> <Id x> : <Type t>`
 			: return question("<s>", "<x>", cst2ast(t), src = q@\loc);
-	case (Question)`<Str s> <Id x> : <Type t> = <Expr e>`
+		case (Question)`<Str s> <Id x> : <Type t> = <Expr e>`
 			: return computedQuestion("<s>", "<x>", cst2ast(t), cst2ast(e), src = q@\loc);
-	case (Question)`{ <Question* ss> }`
+		case (Question)`{ <Question* ss> }`
 			: return block([cst2ast(s) | Question s <- ss], src = q@\loc); 
-	case (Question)`if ( <Expr e> ) { <Question* ss> }`
+		case (Question)`if ( <Expr e> ) { <Question* ss> }`
 			: return ifThenQuestion(cst2ast(e), [cst2ast (s) | Question s <- ss], src = q@\loc);
-	case (Question)`if ( <Expr e> ) { <Question* ss> } else { <Question* xx> }`
+		case (Question)`if ( <Expr e> ) { <Question* ss> } else { <Question* xx> }`
 			: return ifThenElseQuestion(cst2ast(e), [cst2ast (s) | Question s <- ss], [cst2ast (x) | Question x <- xx], src = q@\loc);
 	}
 }
 
 AExpr cst2ast(Expr e) {
-  switch (e) {
-    case (Expr)`<Id x>`: return ref("<x>", src=e@\loc);
-    case (Expr)`<Str s>`:
-    	return stringCons("<s>", src=e@\loc);
-    case (Expr)`<Int i>`:
-    	return intCons(toInt("<i>"), src=e@\loc);
-    case (Expr)`<Bool b>`:
-    	return boolCons (fromString("<b>"), src=e@\loc);
-    case (Expr)`(<Expr ex>)`: // sure? why not `(<Expr ex>)`
-    	return exprCons(cst2ast(ex), src=e@\loc);
-    case (Expr)`!<Expr ex>`:
-    	return not (cst2ast(ex), src=e@\loc);
-    case (Expr)`<Expr ex1> * <Expr ex2>`:
-    	return mul(cst2ast(ex1), cst2ast(ex2), src=e@\loc);
-    case (Expr)`<Expr ex1> / <Expr ex2>`:
-    	return div(cst2ast(ex1), cst2ast(ex2), src=e@\loc);
-    case (Expr)`<Expr ex1> + <Expr ex2>`:
-    	return add(cst2ast(ex1), cst2ast(ex2), src=e@\loc); 
-    case (Expr)`<Expr ex1> - <Expr ex2>`:
-    	return sub (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
-    case (Expr)`<Expr ex1> \> <Expr ex2>`:
-    	return gt (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
-    case (Expr)`<Expr ex1> \< <Expr ex2>`:
-    	return lt (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
-    case (Expr)`<Expr ex1> \<= <Expr ex2>`:
-    	return leq (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
-    case (Expr)`<Expr ex1> \>= <Expr ex2>`:
-    	return geq (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
-    case (Expr)`<Expr ex1> == <Expr ex2>`:
-    	return equal (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
-    case (Expr)`<Expr ex1> != <Expr ex2>`:
-    	return notEqual (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
-    case (Expr)`<Expr ex1> && <Expr ex2>`:
-    	return and (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
-    case (Expr)`<Expr ex1> || <Expr ex2>`:
-    	return or(cst2ast(ex1), cst2ast(ex2), src=e@\loc);
-  }
+	switch (e) {
+	    case (Expr)`<Id x>`: return ref("<x>", src=e@\loc);
+	    case (Expr)`<Str s>`:
+	    	return stringCons("<s>", src=e@\loc);
+	    case (Expr)`<Int i>`:
+	    	return intCons(toInt("<i>"), src=e@\loc);
+	    case (Expr)`<Bool b>`:
+	    	return boolCons (fromString("<b>"), src=e@\loc);
+	    case (Expr)`(<Expr ex>)`: // sure? why not `(<Expr ex>)`
+	    	return exprCons(cst2ast(ex), src=e@\loc);
+	    case (Expr)`!<Expr ex>`:
+	    	return not (cst2ast(ex), src=e@\loc);
+	    case (Expr)`<Expr ex1> * <Expr ex2>`:
+	    	return mul(cst2ast(ex1), cst2ast(ex2), src=e@\loc);
+	    case (Expr)`<Expr ex1> / <Expr ex2>`:
+	    	return div(cst2ast(ex1), cst2ast(ex2), src=e@\loc);
+	    case (Expr)`<Expr ex1> + <Expr ex2>`:
+	    	return add(cst2ast(ex1), cst2ast(ex2), src=e@\loc); 
+	    case (Expr)`<Expr ex1> - <Expr ex2>`:
+	    	return sub (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
+	    case (Expr)`<Expr ex1> \> <Expr ex2>`:
+	    	return gt (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
+	    case (Expr)`<Expr ex1> \< <Expr ex2>`:
+	    	return lt (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
+	    case (Expr)`<Expr ex1> \<= <Expr ex2>`:
+	    	return leq (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
+	    case (Expr)`<Expr ex1> \>= <Expr ex2>`:
+	    	return geq (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
+	    case (Expr)`<Expr ex1> == <Expr ex2>`:
+	    	return equal (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
+	    case (Expr)`<Expr ex1> != <Expr ex2>`:
+	    	return notEqual (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
+	    case (Expr)`<Expr ex1> && <Expr ex2>`:
+	    	return and (cst2ast(ex1), cst2ast(ex2), src=e@\loc);
+	    case (Expr)`<Expr ex1> || <Expr ex2>`:
+	    	return or(cst2ast(ex1), cst2ast(ex2), src=e@\loc);
+	}
 }
 
 AType cst2ast(Type t) {

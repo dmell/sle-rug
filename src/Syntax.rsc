@@ -8,20 +8,21 @@ extend lang::std::Id;
  */
 
 start syntax Form 
-  = "form" Id "{" Question* "}"; 
+	= "form" Id "{" Question* "}"; 
 
 // TODO: question, computed question, block, if-then-else, if-then
 syntax Question
-  = normal: Str Id ":" Type
-  | computed: Str Id ":" Type "=" Expr
-  | block: "{" Question* "}"
-  | ifthen: "if (" Expr ") {" Question* "}"
-  | ifthenelse: "if (" Expr ") {" Question* "}" "else" "{" Question* "}"
-  ; 
+	= normal: Str Id ":" Type
+	| computed: Str Id ":" Type "=" Expr
+	| block: "{" Question* "}"
+	| ifthen: "if (" Expr ") {" Question* "}"
+	| ifthenelse: "if (" Expr ") {" Question* "}" "else" "{" Question* "}"
+	; 
 
 // TODO: +, -, *, /, &&, ||, !, >, <, <=, >=, ==, !=, literals (bool, int, str)
 // Think about disambiguation using priorities and associativity
 // and use C/Java style precedence rules (look it up on the internet)
+<<<<<<< HEAD
 syntax Expr   = Id \ "true" \ "false" // true/false are reserved keywords.
   | Str
   | Bool
@@ -45,20 +46,50 @@ syntax Expr   = Id \ "true" \ "false" // true/false are reserved keywords.
   > left Expr "&&" Expr
   > left Expr "||" Expr
   ;
+=======
+syntax Expr 
+	= Id \ "true" \ "false" // true/false are reserved keywords.
+	| Str
+	| Bool
+	| Int
+	| bracket "(" Expr ")" 
+ 	> left Expr "*" Expr
+ 	> left Expr "/" Expr
+ 	> left (
+    	left Expr "+" Expr
+    	| left Expr "-" Expr
+  	)
+	> "!" Expr
+		> non-assoc (
+	    non-assoc Expr "\>" Expr
+	    | non-assoc Expr "\<" Expr
+	    | non-assoc Expr "\<=" Expr
+		| non-assoc Expr "\>=" Expr
+	  	| non-assoc Expr "==" Expr
+	  	| non-assoc Expr "!=" Expr
+	)
+	> left Expr "&&" Expr
+	> left Expr "||" Expr
+	;
+>>>>>>> b9248114bd04eb2184ba6a5afe8c01eeeea8487b
   
 syntax Type
-  = "integer" | "boolean" | "string";  
+	= "integer" | "boolean" | "string";  
  
 // lexical => no comments nor space are allowed in such expressions  
-/*lexical Str
-  = [a-zA-Z][a-zA-Z]*
-  ;*/
+
   
 lexical Str  = "\"" ![\"]* "\"";
 lexical Int 
+<<<<<<< HEAD
   = [0-9]+;
+=======
+	= [0]
+	| [1-9][0-9]*
+	;
+>>>>>>> b9248114bd04eb2184ba6a5afe8c01eeeea8487b
 
 lexical Bool
-  = "true"
-  | "false"
-  ;
+	= "true"
+	| "false"
+	;
