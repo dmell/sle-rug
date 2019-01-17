@@ -9,10 +9,22 @@ form exams {
 	course: string
 }
 
-if ( studyHours == true) {
+if ( course == "SLE") {
 	"why did you choose it?"
 	reason: string
 }
 
+if ( hours < 4 ) {
+	"question 2"
+		q2: integer
+} else {
+	"question 3"
+	q3: string = reason 
+	"question 4"
+	q4: integer = hours + 3 
+}
+
+"quenwvbr"
+	cdvr : string
 
 }

@@ -156,7 +156,7 @@ str computeQuestions(list[AQuestion] questions){
 		}
 		if (q has condition){
 			if (q has questions2){
-				assigns += "if ("+expr2js(q.condition)+" == \"true\"){\n"+
+				assigns += "if (<expr2js(q.condition)>){\n"+
 				computeQuestions(q.questions) +
 				" \tdocument.getElementById(\"if_<q.src.begin.line>_<q.src.begin.column>\").classList.remove(\"condition_false\");
 				' \tdocument.getElementById(\"else_<q.src.begin.line>_<q.src.begin.column>\").classList.add(\"condition_false\");
@@ -166,7 +166,7 @@ str computeQuestions(list[AQuestion] questions){
 				' \tdocument.getElementById(\"else_<q.src.begin.line>_<q.src.begin.column>\").classList.remove(\"condition_false\");
 				'}";
 			}else{
-				assigns +="if ("+expr2js(q.condition)+" == \"true\"){\n"+
+				assigns +="if (<expr2js(q.condition)>){\n"+
 				computeQuestions(q.questions) +
 				"\tdocument.getElementById(\"if_<q.src.begin.line>_<q.src.begin.column>\").classList.remove(\"condition_false\");
 				'}else{
