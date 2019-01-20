@@ -190,8 +190,8 @@ str questions2js(list[AQuestion] questions) {
 str question2js(question(str qtext, str idTag, AType ty)) {
 	str getElem = "";
 	switch(ty){
-		case integer(): getElem = "document.getElementById(\"<idTag>\").value";
-		case boolean():	getElem = "document.getElementById(\"<idTag>\").options[document.getElementById(\"<idTag>\").selectedIndex].value";
+		case integer(): getElem = "parseInt(document.getElementById(\"<idTag>\").value)";
+		case boolean():	getElem = "document.getElementById(\"<idTag>\").options[document.getElementById(\"<idTag>\").selectedIndex].value == \"true\"";
 		case string() : getElem = "document.getElementById(\"<idTag>\").value";
 	}
   return "function get_<idTag>(){

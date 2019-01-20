@@ -9,7 +9,7 @@ form exams {
 	course: string
 }
 
-if ( course == "SLE") {
+if ( studyHours) {
 	"why did you choose it?"
 	reason: string
 }
@@ -26,5 +26,6 @@ if ( hours < 4 ) {
 
 "quenwvbr"
 	cdvr : string
-
+"proof"
+	f: boolean = studyHours
 }
