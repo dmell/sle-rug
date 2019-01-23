@@ -43,7 +43,7 @@ VEnv eval(AForm f, Input inp, VEnv venv) {
 
 VEnv evalOnce(AForm f, Input inp, VEnv venv) {
 	for (AQuestion q <- f.questions){
-		venv = eval(q,inp,venv);
+		venv = eval(q,inp,venv); // Each question changes or not the enviroment.
 	}
     return venv; 
 }

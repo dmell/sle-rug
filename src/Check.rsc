@@ -140,7 +140,6 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
       		return { error("Uncompatible types", u) | typeOf(l, tenv, useDef) != typeOf(r, tenv, useDef)}
     			+ check(l,tenv,useDef)
     			+ check(r,tenv,useDef); 
-    	//default: return {error("There was a problem but we do not know what")};
     	default: return {};
  	}
  	
