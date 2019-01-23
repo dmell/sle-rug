@@ -247,7 +247,7 @@ str expr2js(strCons(str s)) 	= " <s> ";
 str expr2js(exprCons(AExpr e)) 	= "( " + expr2js(e) + " )"; 
 
 // *
-str expr2js(mul(AExpr l, AExpr r)) = expr2js(l) + "*" + expr2js(l);
+str expr2js(mul(AExpr l, AExpr r)) = expr2js(l) + "*" + expr2js(r);
 // /
 str expr2js(div(AExpr l, AExpr r)) = expr2js(l) + "/" + expr2js(r);
 // +
