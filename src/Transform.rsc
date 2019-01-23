@@ -107,7 +107,7 @@ start[Form] rename(start[Form] f, loc useOrDef, str newName, UseDef useDef) {
 	  			}
 	  		}
 	  		case computedQuestion(str qtext, str id, AType ty, AExpr expr, src = loc s):{
-	  			if (s == auxUOrDef){
+	  			if (s == auxUseOrDef){
 	  				return id;
 	  			}
 	  		}

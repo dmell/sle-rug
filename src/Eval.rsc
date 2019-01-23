@@ -80,7 +80,7 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
 			 
 		}
 		case ifThenElseQuestion(AExpr condition, list[AQuestion] questions, list[AQuestion] questions2):{
-			if (eval(condition) == vbool(true)){
+			if (eval(condition,venv) == vbool(true)){
 				for (AQuestion q <- questions){
 					venv = eval(q,inp,venv);
 				}; 
@@ -125,7 +125,7 @@ Value eval(AExpr e, VEnv venv) {
         	return vbool(eval(l,venv).n <= eval(r,venv).n);
         case equal (AExpr l, AExpr r):{
         	switch (l){
-        		case insCons (int n): {
+        		case intCons (int n): {
         			return vbool(n == eval(r,venv).n);
         		}
         		case strCons(str s): {
@@ -138,7 +138,7 @@ Value eval(AExpr e, VEnv venv) {
         }
         case notEqual (AExpr l, AExpr r):{
         	switch (l){
-        		case insCons (int n): {
+        		case intCons (int n): {
         			return vins(n != eval(r,venv).n);
         		}
         		case strCons(str s): {
